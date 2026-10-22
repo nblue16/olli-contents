@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Olli Story Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: navy cover band with headline figures, then white report sections; one theme, built to print. */
+:root {
+  --ink: #0E1A33; --navy: #12224A; --navy-2: #1B3168; --paper: #FFFFFF; --mist: #F3F5FA; --line: #DDE2EE; --muted: #5B6680;
+  --bed: #4F5FD8; --edu: #12A39A; --mus: #E8A33B; --on-band: #E9EDF8; --on-band-muted: #A9B4D6;
+  --display: "Fraunces", Georgia, "Times New Roman", serif;
+  --body: "Manrope", "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1080px; margin-inline: auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+.cover { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%); color: var(--on-band); }
+.cover .wrap { padding-block: 56px 48px; }
+.eyebrow { text-transform: uppercase; letter-spacing: .14em; font-size: 12px; font-weight: 600; color: var(--on-band-muted); margin: 0; }
+h1 { font-family: var(--display); font-weight: 400; font-size: clamp(34px, 5vw, 52px); line-height: 1.08; margin: 10px 0 12px; text-wrap: balance; }
+.cover p.sub { margin: 0; max-width: 60ch; color: var(--on-band-muted); font-size: 16px; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); gap: 16px; margin-top: 36px; }
+.kpi { border-top: 1px solid rgba(233, 237, 248, .25); padding-top: 14px; }
+.kpi .n { font-family: var(--display); font-size: clamp(36px, 5vw, 48px); line-height: 1; font-variant-numeric: tabular-nums; }
+.kpi .l { margin-top: 8px; font-size: 13px; color: var(--on-band-muted); }
+main .wrap { padding-block: 40px 56px; display: flex; flex-direction: column; gap: 48px; }
+.block h2 { font-family: var(--display); font-weight: 600; font-size: 26px; margin: 0 0 6px; text-wrap: balance; }
+.lede { margin: 0 0 20px; color: var(--muted); max-width: 70ch; }
+.charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 20px; }
+.panel { background: var(--mist); border-radius: 14px; padding: 22px; min-width: 0; break-inside: avoid; }
+.panel h3 { margin: 0; font-size: 16px; font-weight: 700; }
+.panel .cap { margin: 2px 0 14px; color: var(--muted); font-size: 13px; }
+svg .ax { fill: var(--ink); font: 600 13px var(--body); }
+svg .in { fill: #fff; font: 600 11.5px var(--body); text-anchor: middle; }
+svg .end { fill: var(--muted); font: 600 12.5px var(--body); font-variant-numeric: tabular-nums; }
+.b-bed { fill: var(--bed); background: var(--bed); } .b-edu { fill: var(--edu); background: var(--edu); } .b-mus { fill: var(--mus); background: var(--mus); }
+.legend { display: flex; flex-wrap: wrap; gap: 18px; font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.sw { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.tbl-wrap { overflow-x: auto; margin-top: 20px; }
+table.breakdown { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 14px; }
+.breakdown th, .breakdown td { padding: 9px 12px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+.breakdown th:first-child { text-align: left; }
+.breakdown thead th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+.breakdown thead th.grp { text-align: center; color: var(--ink); border-bottom: 2px solid var(--navy); letter-spacing: .1em; }
+.breakdown .tot { font-weight: 700; }
+.breakdown tfoot th, .breakdown tfoot td { font-weight: 700; border-top: 2px solid var(--ink); border-bottom: none; }
+.langs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr)); gap: 20px; }
+.lang { border: 1px solid var(--line); border-radius: 14px; padding: 20px; break-inside: avoid; min-width: 0; }
+.lang h3 { margin: 0 0 14px; font-family: var(--display); font-weight: 600; font-size: 20px; }
+.tracks { display: flex; flex-direction: column; gap: 14px; }
+.track { display: flex; flex-direction: column; gap: 6px; padding-bottom: 14px; border-bottom: 1px dashed var(--line); }
+.track:last-child { border-bottom: none; padding-bottom: 0; }
+.track-top { display: flex; align-items: center; justify-content: space-between; align-items: center; }
+.tag { align-self: flex-start; font-size: 11.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 3px 10px; border-radius: 999px; color: #fff; }
+.t-bed { background: var(--bed); } .t-edu { background: var(--edu); } .t-mus { background: var(--mus); color: var(--ink); }
+.dur { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.title { margin: 0; font-weight: 600; font-size: 15px; }
+.track.empty .title { color: var(--muted); font-weight: 500; font-style: italic; }
+audio { width: 100%; height: 38px; }
+.listen { display: none; color: var(--navy-2); font-weight: 600; font-size: 13px; }
+footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 12.5px; }
+footer .wrap { padding-block: 18px 28px; }
+@media print {
+  @page { size: A4; margin: 12mm; }
+  body { font-size: 12.5px; }
+  .wrap { max-width: none; padding-left: 0; padding-right: 0; }
+  .cover { border-radius: 12px; } .cover .wrap { padding: 32px 28px; }
+  main .wrap { padding-block: 24px 0; gap: 28px; }
+  .samples { break-before: page; }
+  .charts { grid-template-columns: 1fr; }
+  .langs { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .lang { padding: 14px; }
+  .kpis { grid-template-columns: repeat(5, 1fr); }
+  .tbl-wrap { overflow: visible; break-inside: avoid; }
+  table.breakdown { font-size: 11px; }
+  .breakdown th, .breakdown td { padding: 6px 6px; }
+  .breakdown thead th { font-size: 9.5px; letter-spacing: .03em; }
+  audio { display: none; }
+  .listen { display: inline; }
+}
+</style></head>
+<body>
+<header class="cover"><div class="wrap">
+  <p class="eyebrow">Olli · Story library · As of 20 October 2026</p>
+  <h1>2,529 stories, ready in 4 languages</h1>
+  <p class="sub">A ready-made library of bedtime stories, educational stories and music in English, German, Spanish and French.</p>
+  <div class="kpis">
+    <div class="kpi"><div class="n">2,529</div><div class="l">Premade Stories</div></div>
+    <div class="kpi"><div class="n">1,057</div><div class="l">Bedtime</div></div>
+    <div class="kpi"><div class="n">1,270</div><div class="l">Education</div></div>
+    <div class="kpi"><div class="n">202</div><div class="l">Music</div></div>
+    <div class="kpi"><div class="n">4</div><div class="l">Languages: English, German, Spanish, French</div></div>
+  </div>
+</div></header>
+<main><div class="wrap">
+  <section class="block">
+    <h2>What is in the library</h2>
+    <p class="lede">Number of stories in each language, split into Bedtime, Education and Music.</p>
+    <div class="legend"><span><i class="sw b-bed"></i>Bedtime</span><span><i class="sw b-edu"></i>Education</span><span><i class="sw b-mus"></i>Music</span></div>
+    <div class="charts">
+      <div class="panel"><h3>Premade Stories</h3><p class="cap">2,529 stories</p><svg viewBox="0 0 760 168" width="100%" role="img" aria-label="Premade Stories by language and type"><text x="0" y="25.0" class="ax">English</text><rect x="66.0" y="8" width="284.3" height="24" class="b-bed"><title>English · Bedtime: 334</title></rect><text x="208.1" y="24.5" class="in">334</text><rect x="350.3" y="8" width="318.3" height="24" class="b-edu"><title>English · Education: 374</title></rect><text x="509.5" y="24.5" class="in">374</text><rect x="668.6" y="8" width="49.4" height="24" class="b-mus"><title>English · Music: 58</title></rect><text x="693.3" y="24.5" class="in">58</text><text x="726.0" y="25.0" class="end">766</text><text x="0" y="65.0" class="ax">German</text><rect x="66.0" y="48" width="132.8" height="24" class="b-bed"><title>German · Bedtime: 156</title></rect><text x="132.4" y="64.5" class="in">156</text><rect x="198.8" y="48" width="194.9" height="24" class="b-edu"><title>German · Education: 229</title></rect><text x="296.2" y="64.5" class="in">229</text><rect x="393.7" y="48" width="41.7" height="24" class="b-mus"><title>German · Music: 49</title></rect><text x="414.6" y="64.5" class="in">49</text><text x="443.4" y="65.0" class="end">434</text><text x="0" y="105.0" class="ax">Spanish</text><rect x="66.0" y="88" width="207.7" height="24" class="b-bed"><title>Spanish · Bedtime: 244</title></rect><text x="169.8" y="104.5" class="in">244</text><rect x="273.7" y="88" width="265.6" height="24" class="b-edu"><title>Spanish · Education: 312</title></rect><text x="406.5" y="104.5" class="in">312</text><rect x="539.3" y="88" width="41.7" height="24" class="b-mus"><title>Spanish · Music: 49</title></rect><text x="560.1" y="104.5" class="in">49</text><text x="589.0" y="105.0" class="end">605</text><text x="0" y="145.0" class="ax">French</text><rect x="66.0" y="128" width="274.9" height="24" class="b-bed"><title>French · Bedtime: 323</title></rect><text x="203.5" y="144.5" class="in">323</text><rect x="340.9" y="128" width="302.2" height="24" class="b-edu"><title>French · Education: 355</title></rect><text x="492.0" y="144.5" class="in">355</text><rect x="643.1" y="128" width="39.2" height="24" class="b-mus"><title>French · Music: 46</title></rect><text x="662.7" y="144.5" class="in">46</text><text x="690.3" y="145.0" class="end">724</text></svg></div>
+    </div>
+    
+<div class="tbl-wrap"><table class="breakdown">
+<thead>
+<tr><th>Language</th><th>Bedtime</th><th>Education</th><th>Music</th><th>Total</th></tr>
+</thead>
+<tbody><tr><th scope="row">English</th><td>334</td><td>374</td><td>58</td><td class="tot">766</td></tr><tr><th scope="row">German</th><td>156</td><td>229</td><td>49</td><td class="tot">434</td></tr><tr><th scope="row">Spanish</th><td>244</td><td>312</td><td>49</td><td class="tot">605</td></tr><tr><th scope="row">French</th><td>323</td><td>355</td><td>46</td><td class="tot">724</td></tr></tbody>
+<tfoot><tr><th scope="row">All languages</th><td>1,057</td><td>1,270</td><td>202</td><td class="tot">2,529</td></tr></tfoot>
+</table></div>
+  </section>
+  <section class="block samples">
+<h2>Listen: Premade Stories</h2><p class="lede">One example for each language and category. Press play to listen.</p>
+<div class="langs"><article class="lang"><h3>English</h3><div class="tracks"><div class="track"><div class="track-top"><span class="tag t-bed">Bedtime</span><span class="dur">10:28</span></div>
+<p class="title">The Package on Maple Street</p>
+<audio controls preload="none" src="https://storytellings.s3.ap-southeast-1.amazonaws.com/staging/uf7pi8mjfi2aixcaaal/0-1781588228262.ogg"></audio>
+<a class="listen" href="https://storytellings.s3.ap-southeast-1.amazonaws.com/staging/uf7pi8mjfi2aixcaaal/0-1781588228262.ogg">Listen online</a></div><div class="track"><div class="track-top"><span class="tag t-edu">Education</span><span class="dur">4:48</span></div>
+<p class="title">Who Ruled Egypt Long Ago</p>
+<audio controls preload="none" src="https://storytellings.s3.ap-southeast-1.amazonaws.com/staging/20cieu8ypus2j4elaaad/0-1787557285196.mp3"></audio>
+<a class="listen" href="https://storytellings.s3.ap-southeast-1.amazonaws.com/staging/20cieu8ypus2j4elaaad/0-1787557285196.mp3">Listen online</a></div><div class="track"><div class="track-top"><span class="tag t-mus">Music</span><span class="dur">3:30</span></div>
+<p class="title">Wings Unfold</p>
+<audio controls preload="none" src="https://storytellings.s3.ap-southeast-1.amazonaws.com/staging/from-admin/1767950151872.ogg"></audio>
+<a class="listen" href="https://storytellings.s3.ap-southeast-1.amazonaws.com/staging/from-admin/1767950151872.ogg">Listen online</a></div></div></article><article class="lang"><h3>German</h3><div class="tracks"><div class="track"><div class="track-top"><span class="tag t-bed">Bedtime</span><span class="dur">5:31</span></div>
+<p class="title">Der singende Regenwald</p>
+<audio controls preload="none" src="https://storytellings.s3.ap-southeast-1.amazonaws.com/staging/0-1785475568265/0-1785475684255.ogg"></audio>
+<a class="listen" href="https://storytellings.s3.ap-southeast-1.amazonaws.com/staging/0-1785475568265/0-1785475684255.ogg">Listen online</a></div><div class="track"><div class="track-top"><span class="tag t-edu">Education</span><span class="dur">12:10</span></div>
+<p class="title">Von der Überfahrt zur Begegnung</p>
+<audio controls preload="none" src="https://storytellings.s3.ap-southeast-1.amazonaws.com/staging/p02o605hhxfq-tglaaax/0-1785314015819.mp3"></audio>
+<a class="listen" href="https://storytellings.s3.ap-southeast-1.amazonaws.com/staging/p02o605hhxfq-tglaaax/0-1785314015819.mp3">Listen online</a></div><div class="track"><div class="track-top"><span class="tag t-mus">Music</span><span class="dur">3:09</span></div>
+<p class="title">Schau Mich Jetzt An</p>
+<audio controls preload="none" src="https://storytellings.s3.ap-southeast-1.amazonaws.com/staging/from-admin/1785231222673.ogg"></audio>
+<a class="listen" href="https://storytellings.s3.ap-southeast-1.amazonaws.com/staging/from-admin/1785231222673.ogg">Listen online</a></div></div></article><article class="lang"><h3>Spanish</h3><div class="tracks"><div class="track"><div class="track-top"><span class="tag t-bed">Bedtime</span><span class="dur">6:05</span></div>
+<p class="title">El misterio de las huellas brillantes</p>
+<audio controls preload="none" src="https://storytellings.s3.ap-southeast-1.amazonaws.com/staging/kbznidjjrufaq0zoaafx/0-1785518440354.ogg"></audio>
+<a class="listen" href="https://storytellings.s3.ap-southeast-1.amazonaws.com/staging/kbznidjjrufaq0zoaafx/0-1785518440354.ogg">Listen online</a></div><div class="track"><div class="track-top"><span class="tag t-edu">Education</span><span class="dur">1:55</span></div>
+<p class="title">La gran vuelta de la Tierra</p>
+<audio controls preload="none" src="https://storytellings.s3.ap-southeast-1.amazonaws.com/staging/plhs-knbphwt9vl1aaf1/0-1785737043493.mp3"></audio>
+<a class="listen" href="https://storytellings.s3.ap-southeast-1.amazonaws.com/staging/plhs-knbphwt9vl1aaf1/0-1785737043493.mp3">Listen online</a></div><div class="track"><div class="track-top"><span class="tag t-mus">Music</span><span class="dur">4:00</span></div>
+<p class="title">Piano del amor</p>
+<audio controls preload="none" src="https://storytellings.s3.ap-southeast-1.amazonaws.com/staging/from-admin/1767955302863.ogg"></audio>
+<a class="listen" href="https://storytellings.s3.ap-southeast-1.amazonaws.com/staging/from-admin/1767955302863.ogg">Listen online</a></div></div></article><article class="lang"><h3>French</h3><div class="tracks"><div class="track"><div class="track-top"><span class="tag t-bed">Bedtime</span><span class="dur">7:08</span></div>
+<p class="title">Les routes aux rubans magiques</p>
+<audio controls preload="none" src="https://storytellings.s3.ap-southeast-1.amazonaws.com/staging/o1jrhsuqu4-4f49maaa/0-1782748628177.ogg"></audio>
+<a class="listen" href="https://storytellings.s3.ap-southeast-1.amazonaws.com/staging/o1jrhsuqu4-4f49maaa/0-1782748628177.ogg">Listen online</a></div><div class="track"><div class="track-top"><span class="tag t-edu">Education</span><span class="dur">11:00</span></div>
+<p class="title">De l’océan aux nouvelles cartes</p>
+<audio controls preload="none" src="https://storytellings.s3.ap-southeast-1.amazonaws.com/staging/0-1782896170664/0-1782896279927.mp3"></audio>
+<a class="listen" href="https://storytellings.s3.ap-southeast-1.amazonaws.com/staging/0-1782896170664/0-1782896279927.mp3">Listen online</a></div><div class="track"><div class="track-top"><span class="tag t-mus">Music</span><span class="dur">4:00</span></div>
+<p class="title">Piano de L&#x27;Amour</p>
+<audio controls preload="none" src="https://storytellings.s3.ap-southeast-1.amazonaws.com/staging/from-admin/1767955931112.ogg"></audio>
+<a class="listen" href="https://storytellings.s3.ap-southeast-1.amazonaws.com/staging/from-admin/1767955931112.ogg">Listen online</a></div></div></article></div></section>
+</div></main>
+<footer><div class="wrap">Figures as of 20 October 2026. Removed stories are not counted.</div></footer>
+</body></html>
